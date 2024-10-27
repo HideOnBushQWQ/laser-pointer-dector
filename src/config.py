@@ -1,0 +1,8 @@
+DETECTION_DISTANCE = 2.0  # 米
+DISTANCE_TOLERANCE = 0.1  # 容差10厘米
+# 配置文件中定义的阈值
+RED_LOWER = (0, 150, 150)   # 更严格的红色下限
+RED_UPPER = (10, 255, 255)  # 红色上限保持不变
+BRIGHTNESS_THRESHOLD = 200
+MIN_AREA = 5
+MAX_AREA = 1000
