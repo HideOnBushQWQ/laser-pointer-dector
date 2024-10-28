@@ -15,8 +15,8 @@ class LaserDetector:
         # Convert frame to HSV color space
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         
-        # Define a refined red color range for bright center detection
-        lower_red_center = np.array([0, 120, 120])
+        # Define initial red color range for bright center detection
+        lower_red_center = np.array([0, 150, 150])
         upper_red_center = np.array([10, 255, 255])
         center_mask = cv2.inRange(hsv, lower_red_center, upper_red_center)
         
@@ -33,23 +33,17 @@ class LaserDetector:
                 gray_center = cv2.cvtColor(roi_center, cv2.COLOR_BGR2GRAY)
                 center_brightness = np.mean(gray_center)
                 
-                # Calculate red dominance
-                mean_red_channel = np.mean(roi_center[:, :, 2])
-                mean_green_channel = np.mean(roi_center[:, :, 1])
-                mean_blue_channel = np.mean(roi_center[:, :, 0])
-
-                # Debug output for center detection
-                print(f"Center Detection - Position: {(x, y, w, h)}, Area: {area}, Brightness: {center_brightness}, "
-                      f"Red: {mean_red_channel}, Green: {mean_green_channel}, Blue: {mean_blue_channel}")
+                # Debug output for the center detection step
+                print(f"Center Detection - Position: {(x, y, w, h)}, Area: {area}, Brightness: {center_brightness}")
                 
-                # Step 2: Check brightness and red dominance with adjusted thresholds
-                if center_brightness >= self.brightness_threshold and \
-                   mean_red_channel > mean_green_channel + 30 and \
-                   mean_red_channel > mean_blue_channel + 30:
-                    # Debug output before drawing
-                    print(f"Drawing Rectangle at Position: {(x, y, w, h)} with Distance Estimation")
-
-                    # Draw a green rectangle around the detected laser pointer region
+                if center_brightness < self.brightness_threshold:
+                    continue  # Skip non-bright regions
+                
+                # Step 2: Check surrounding area for gradual red decrease
+                outer_region_found = self.check_outer_region(hsv, x, y, w, h)
+                
+                if outer_region_found:
+                    # Draw a green rectangle around detected laser pointer region
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
                     # Estimate the distance to the laser
@@ -60,6 +54,31 @@ class LaserDetector:
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         
         return frame
+
+    def check_outer_region(self, hsv, x, y, w, h):
+        """Check for a gradually fading red region around the center."""
+        outer_layers = [
+            {"lower": np.array([0, 100, 100]), "upper": np.array([10, 200, 200]), "dilation": 3},
+            {"lower": np.array([0, 70, 50]), "upper": np.array([10, 150, 150]), "dilation": 5},
+        ]
+        
+        for i, layer in enumerate(outer_layers):
+            # Create a mask for the outer red layers
+            mask_outer = cv2.inRange(hsv, layer["lower"], layer["upper"])
+            mask_outer = apply_dilation(mask_outer, iterations=layer["dilation"])
+            
+            # Check if there are sufficient red pixels around the detected center
+            roi_outer = mask_outer[y:y+h, x:x+w]
+            red_pixel_ratio = np.sum(roi_outer) / (w * h * 255)  # Ratio of red pixels in the outer area
+
+            # Debug output for each outer layer
+            print(f"Outer Layer {i+1} - Position: {(x, y, w, h)}, Red Pixel Ratio: {red_pixel_ratio}")
+            
+            # Require at least 15% red pixels in the outer layer to confirm
+            if red_pixel_ratio < 0.15:
+                return False
+        
+        return True
 
     def estimate_distance(self, pixel_width):
         """Estimate the distance to the laser based on its pixel width."""

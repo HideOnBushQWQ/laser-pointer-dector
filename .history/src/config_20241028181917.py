@@ -4,7 +4,7 @@
 THRESHOLDS = {
     "brightness_threshold": 110,  # Lowered brightness threshold
     "red_intensity_threshold": 110,  # Adjusted red intensity threshold
-    "area_threshold": 30,  # Minimum area size of the red region
+    "area_threshold": 40,  # Minimum area size of the red region
 }
 
 # Camera parameters for distance estimation

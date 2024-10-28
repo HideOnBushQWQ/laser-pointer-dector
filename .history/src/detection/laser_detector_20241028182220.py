@@ -42,10 +42,10 @@ class LaserDetector:
                 print(f"Center Detection - Position: {(x, y, w, h)}, Area: {area}, Brightness: {center_brightness}, "
                       f"Red: {mean_red_channel}, Green: {mean_green_channel}, Blue: {mean_blue_channel}")
                 
-                # Step 2: Check brightness and red dominance with adjusted thresholds
+                # Step 2: Check brightness and red dominance
                 if center_brightness >= self.brightness_threshold and \
-                   mean_red_channel > mean_green_channel + 30 and \
-                   mean_red_channel > mean_blue_channel + 30:
+                   mean_red_channel > mean_green_channel + 50 and \
+                   mean_red_channel > mean_blue_channel + 50:
                     # Debug output before drawing
                     print(f"Drawing Rectangle at Position: {(x, y, w, h)} with Distance Estimation")
 

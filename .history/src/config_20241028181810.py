@@ -2,9 +2,9 @@
 
 # Threshold values for detecting the laser pointer
 THRESHOLDS = {
-    "brightness_threshold": 110,  # Lowered brightness threshold
-    "red_intensity_threshold": 110,  # Adjusted red intensity threshold
-    "area_threshold": 30,  # Minimum area size of the red region
+    "brightness_threshold": 120,  # Lowered brightness threshold
+    "red_intensity_threshold": 120,  # Adjusted red intensity threshold
+    "area_threshold": 50,  # Minimum area size of the red region
 }
 
 # Camera parameters for distance estimation
