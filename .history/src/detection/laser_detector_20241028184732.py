@@ -29,7 +29,7 @@ def detect_laser_pointer(frame):
     if area < MIN_CONTOUR_AREA:
         return None, None, None
 
-    # Calculate the center and radius of the laser spot
-    ((x, y), radius) = cv2.minEnclosingCircle(largest_contour)
+    # Get bounding rectangle for the laser spot
+    x, y, w, h = cv2.boundingRect(largest_contour)
     distance = estimate_distance(area)
-    return (int(x), int(y), int(radius)), distance, area
+    return (x, y, w, h), distance, area

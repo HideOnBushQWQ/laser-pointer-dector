@@ -17,7 +17,7 @@ def main():
             x, y, radius = circle_params
 
             # Draw a green circle around the detected laser spot
-            cv2.circle(frame, (x, y), radius, (220, 194, 133), 2)
+            cv2.circle(frame, (x, y), radius, (133, 194, 220), 2)
 
             # Display the distance if within the specified range
             if distance and 1.9 <= distance <= 2.1:
@@ -25,8 +25,8 @@ def main():
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
             # Label the laser pointer
-            cv2.putText(frame, "a point", (x - 50, y - 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 200), 2)
+            cv2.putText(frame, "here", (x - 50, y - 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         # Display the frame
         cv2.imshow('Laser Pointer Detection', frame)

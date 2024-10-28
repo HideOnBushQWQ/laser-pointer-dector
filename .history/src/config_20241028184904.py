@@ -4,9 +4,9 @@
 DISTANCE_CALIBRATION = 500
 
 # HSV color range for red laser pointer
-RED_LOWER1 = (0, 150, 150)
+RED_LOWER1 = (0, 100, 100)
 RED_UPPER1 = (10, 255, 255)
-RED_LOWER2 = (170, 150, 150)
+RED_LOWER2 = (160, 100, 100)
 RED_UPPER2 = (179, 255, 255)
 
 # Minimum contour area to consider as laser pointer

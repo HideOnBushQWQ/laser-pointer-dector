@@ -2,7 +2,7 @@
 
 import cv2
 import numpy as np
-from config import DISTANCE_CALIBRATION, MIN_CONTOUR_AREA
+from config import DISTANCE_CALIBRATION, MIN_CONTOUR_AREA, BRIGHTNESS_THRESHOLD
 from utils.image_processing import get_red_mask, apply_blur
 
 def estimate_distance(area):
@@ -29,7 +29,16 @@ def detect_laser_pointer(frame):
     if area < MIN_CONTOUR_AREA:
         return None, None, None
 
-    # Calculate the center and radius of the laser spot
-    ((x, y), radius) = cv2.minEnclosingCircle(largest_contour)
+    # Calculate average brightness within the contour
+    mask_contour = np.zeros_like(mask)
+    cv2.drawContours(mask_contour, [largest_contour], -1, 255, thickness=cv2.FILLED)
+    mean_val = cv2.mean(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), mask=mask_contour)[0]
+
+    # Check if the brightness is above the threshold
+    if mean_val < BRIGHTNESS_THRESHOLD:
+        return None, None, None
+
+    # Get bounding rectangle for the laser spot
+    x, y, w, h = cv2.boundingRect(largest_contour)
     distance = estimate_distance(area)
-    return (int(x), int(y), int(radius)), distance, area
+    return (x, y, w, h), distance, area

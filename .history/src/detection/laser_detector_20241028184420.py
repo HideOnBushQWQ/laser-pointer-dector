@@ -10,6 +10,18 @@ def estimate_distance(area):
         return None
     return DISTANCE_CALIBRATION / np.sqrt(area)
 
+def is_circle_like(contour):
+    # Calculate contour area and perimeter
+    area = cv2.contourArea(contour)
+    perimeter = cv2.arcLength(contour, True)
+    # Avoid division by zero
+    if perimeter == 0:
+        return False
+    # Calculate circularity
+    circularity = 4 * np.pi * (area / (perimeter * perimeter))
+    # A circularity close to 1 indicates a circle
+    return 0.7 < circularity < 1.3
+
 def detect_laser_pointer(frame):
     # Convert to HSV and apply red color mask
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -26,10 +38,15 @@ def detect_laser_pointer(frame):
     largest_contour = max(contours, key=cv2.contourArea)
     area = cv2.contourArea(largest_contour)
 
-    if area < MIN_CONTOUR_AREA:
+    # Filter based on area, brightness, and shape
+    if area < MIN_CONTOUR_AREA or area > 300:  # Filter based on size
         return None, None, None
 
-    # Calculate the center and radius of the laser spot
-    ((x, y), radius) = cv2.minEnclosingCircle(largest_contour)
+    # Check if the contour is circle-like to avoid detecting ears or lips
+    if not is_circle_like(largest_contour):
+        return None, None, None
+
+    # Get bounding rectangle for the laser spot
+    x, y, w, h = cv2.boundingRect(largest_contour)
     distance = estimate_distance(area)
-    return (int(x), int(y), int(radius)), distance, area
+    return (x, y, w, h), distance, area

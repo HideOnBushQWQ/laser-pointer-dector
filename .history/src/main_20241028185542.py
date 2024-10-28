@@ -26,7 +26,7 @@ def main():
 
             # Label the laser pointer
             cv2.putText(frame, "a point", (x - 50, y - 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 200), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 194, 133), 2)
 
         # Display the frame
         cv2.imshow('Laser Pointer Detection', frame)

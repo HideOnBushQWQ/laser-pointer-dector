@@ -10,23 +10,23 @@ def main():
     while True:
         frame = read_frame(cap)
 
-        # Detect the laser pointer and get circle parameters and distance
-        circle_params, distance, area = detect_laser_pointer(frame)
+        # Detect the laser pointer and get bounding box and distance
+        bounding_box, distance, area = detect_laser_pointer(frame)
 
-        if circle_params is not None:
-            x, y, radius = circle_params
+        if bounding_box is not None:
+            x, y, w, h = bounding_box
 
-            # Draw a green circle around the detected laser spot
-            cv2.circle(frame, (x, y), radius, (220, 194, 133), 2)
+            # Draw a green rectangle around the detected laser spot
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
             # Display the distance if within the specified range
             if distance and 1.9 <= distance <= 2.1:
-                cv2.putText(frame, f"Distance: {distance:.2f} m", (x - 50, y - 40),
+                cv2.putText(frame, f"Distance: {distance:.2f} m", (x, y - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
             # Label the laser pointer
-            cv2.putText(frame, "a point", (x - 50, y - 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 200), 2)
+            cv2.putText(frame, "Laser Pointer", (x, y - 25),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         # Display the frame
         cv2.imshow('Laser Pointer Detection', frame)
