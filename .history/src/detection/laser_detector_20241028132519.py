@@ -26,13 +26,14 @@ class LaserDetector:
             area = cv2.contourArea(contour)
             if self.min_area <= area <= self.max_area:
                 x, y, w, h = cv2.boundingRect(contour)
-                coordinates = (x + w // 2, y + h // 2)
-                distance = self.calculate_distance(w) 
+                coordinates = (x + w // 2, y + h // 2)  # 中心坐标
+                distance = self.calculate_distance(w)  # 根据宽度估算距离
                 return True, coordinates, (x, y, w, h), distance
 
-        return False, None, None, None  # not found
+        return False, None, None, None  # 未检测到激光
 
     def calculate_distance(self, width):
-        known_width = 0.01
+        # 使用焦距和物体宽度估算距离，假设激光点宽度已知
+        known_width = 0.01  # 假设激光的真实宽度为 1 厘米
         distance = (known_width * self.focal_length) / width
-        return round(distance, 2)
+        return round(distance, 2)  # 返回米，保留两位小数

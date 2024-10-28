@@ -33,6 +33,7 @@ class LaserDetector:
         return False, None, None, None  # not found
 
     def calculate_distance(self, width):
-        known_width = 0.01
+        # 使用焦距和物体宽度估算距离，假设激光点宽度已知
+        known_width = 0.01  # 假设激光的真实宽度为 1 厘米
         distance = (known_width * self.focal_length) / width
-        return round(distance, 2)
+        return round(distance, 2)  # 返回米，保留两位小数

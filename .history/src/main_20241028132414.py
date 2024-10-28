@@ -29,7 +29,7 @@ def main():
             cv2.putText(frame, f"{distance} m", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX,
                         0.6, (0, 255, 0), 2)
 
-        # show video stream
+        # 显示视频流
         cv2.imshow("Laser Detection", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

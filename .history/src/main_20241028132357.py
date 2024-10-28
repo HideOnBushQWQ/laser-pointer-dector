@@ -18,18 +18,18 @@ def main():
         if frame is None:
             break
 
-        # detect the distance and position
+        # detect
         detected, coordinates, bounding_box, distance = detector.detect(frame)
         if detected:
-            # green rectangle
+            # 画出绿色矩形框
             x, y, w, h = bounding_box
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            # show distance
+            # 显示距离信息
             cv2.putText(frame, f"{distance} m", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX,
                         0.6, (0, 255, 0), 2)
 
-        # show video stream
+        # 显示视频流
         cv2.imshow("Laser Detection", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

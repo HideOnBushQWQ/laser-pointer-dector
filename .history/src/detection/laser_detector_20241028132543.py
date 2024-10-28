@@ -35,4 +35,4 @@ class LaserDetector:
     def calculate_distance(self, width):
         known_width = 0.01
         distance = (known_width * self.focal_length) / width
-        return round(distance, 2)
+        return round(distance, 2)  # 返回米，保留两位小数
